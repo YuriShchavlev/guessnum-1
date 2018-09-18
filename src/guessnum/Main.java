@@ -1,5 +1,8 @@
 package guessnum;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 
 
@@ -9,6 +12,7 @@ public class Main {
     static List<GameResult> results = new ArrayList<>();
 
     public static void main(String[] args) {
+        loadResults();
         String answer;
         do {
             System.out.println("What is your name?");
@@ -48,13 +52,42 @@ public class Main {
         } while (answer.equals("y"));
 
         showResults();
+        saveResults();
 
         System.out.println("Good bye!");
     }
 
+    private static void loadResults() {
+        File file = new File("top_scores.txt");
+        try (Scanner in = new Scanner(file)) {
+
+            while (in.hasNext()) {
+                GameResult result = new GameResult();
+                result.name = in.next();
+                result.triesCount = in.nextInt();
+                result.time = in.nextLong();
+                results.add(result);
+            }
+
+        } catch (IOException e) {
+            System.out.println("Cannot load from file");
+        }
+    }
+
+    private static void saveResults() {
+        File file = new File("top_scores.txt");
+        try (PrintWriter out = new PrintWriter(file)) {
+            for (GameResult r : results) {
+                out.printf("%s %d %d\n", r.name, r.triesCount, r.time);
+            }
+        } catch (IOException e) {
+            System.out.println("Cannot save to file");
+        }
+    }
+
     private static void showResults() {
         for (GameResult r : results) {
-            System.out.println(r.name + " ----- " + r.triesCount + " ----- " + (r.time / 1000) + "sec");
+            System.out.printf("%s - %d - %.2fsec\n", r.name, r.triesCount, r.time / 1000.0);
         }
     }
 
