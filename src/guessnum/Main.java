@@ -41,6 +41,8 @@ public class Main {
                     r.triesCount = i;
                     r.time = t2 - t1;
                     results.add(r);
+                    results.sort(Comparator.<GameResult>comparingInt(r0 -> r0.triesCount)
+                            .thenComparingLong(r0 -> r0.time));
                     break;
                 }
             }
@@ -85,10 +87,47 @@ public class Main {
         }
     }
 
+//    private static void showResults() {
+//        int count = 0;
+//        for (GameResult r : results) {
+//            System.out.printf("%s - %d - %.2fsec\n", r.name, r.triesCount, r.time / 1000.0);
+//            count++;
+//            if (count == 5) {
+//                break;
+//            }
+//        }
+//    }
+
+//    private static void showResults() {
+//        int count = Math.min(5, results.size());
+//        for (int i = 0; i < count; i++) {
+//            GameResult r = results.get(i);
+//            System.out.printf("%s - %d - %.2fsec\n", r.name, r.triesCount, r.time / 1000.0);
+//        }
+//    }
+
     private static void showResults() {
+        int maxLen = findMaxNameLen();
+
+        results.stream()
+                .limit(5)
+                .forEach(r -> {
+                    System.out.print(r.name);
+                    for (int i = 0; i < (maxLen - r.name.length()); i++) {
+                        System.out.print("_");
+                    }
+                    System.out.printf("%d - %.2fsec\n", r.triesCount, r.time / 1000.0);
+                });
+    }
+
+    private static int findMaxNameLen() {
+        int result = 0;
         for (GameResult r : results) {
-            System.out.printf("%s - %d - %.2fsec\n", r.name, r.triesCount, r.time / 1000.0);
+            if (result < r.name.length()) {
+                result = r.name.length();
+            }
         }
+        return result;
     }
 
     static String askYN() {
