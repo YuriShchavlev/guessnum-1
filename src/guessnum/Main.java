@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.stream.Stream;
 
 
 public class Main {
@@ -121,13 +122,18 @@ public class Main {
     }
 
     private static int findMaxNameLen() {
-        int result = 0;
+       /* int result = 0;
         for (GameResult r : results) {
             if (result < r.name.length()) {
                 result = r.name.length();
             }
-        }
-        return result;
+        }*/
+        return results.stream()
+                .map(r -> r.name)
+                .map(n -> n.length())
+                .max(Comparator.naturalOrder())
+                .get();
+
     }
 
     static String askYN() {
